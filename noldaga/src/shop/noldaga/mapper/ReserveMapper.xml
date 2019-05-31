@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reserve">
+	<select id="reservDetail" resultType="shop.noldaga.reserve.vo.ReserveVo" parameterType="shop.noldaga.reserve.vo.ReserveVo">
+		select  
+		    p.psidx, pstitle 
+		    , r.rmidx, rmtitle
+		    ,(
+		        SELECT
+		           sum(getprice(TO_DATE(#{startdate})+rownum-1, rmidx))
+		        FROM all_objects
+		        where rownum &lt;= TO_DATE(#{enddate})-TO_DATE(#{startdate})) as money
+		    ,(
+		        SELECT
+		           round(avg(getprice(TO_DATE(#{startdate})+rownum-1, rmidx))/100)*100
+		        FROM all_objects
+		        where rownum &lt;= TO_DATE(#{enddate})-TO_DATE(#{startdate})) as moneyunit
+		    ,#{startdate} startdate,
+		    #{enddate} enddate,
+		    TO_DATE(#{enddate})-TO_DATE(#{startdate}) as days
+		from p_pension p 
+		join p_room r on p.psidx=r.psidx 
+		where p.psidx = #{psidx} and r.rmidx = #{rmidx}
+	</select>
+
+	<insert id="insert"  parameterType="shop.noldaga.reserve.vo.ReserveVo">
+		<selectKey keyProperty="rsidx" order="BEFORE" resultType="int">
+			select rs_seq.nextval from dual 
+		</selectKey>
+		insert into p_reserve(
+			RSIDX
+			,PSIDX
+			,RMIDX
+			,EMAIL
+			,NAME
+			,STARTDATE
+			,ENDDATE
+			,MONEY
+			,MONEYUNIT
+			,PSTITLE
+			,RMTITLE
+			,DAYS
+			,TEL
+		) values (
+			#{rsidx}, #{psidx}, #{rmidx}, #{email}, #{name}, #{startdate},
+			 #{enddate}, #{money}, #{moneyunit}, #{pstitle}, #{rmtitle}, 
+			 #{days}, #{tel}
+		)
+	</insert>
+	
+	<select id="selectByRsidx" resultType="shop.noldaga.reserve.vo.ReserveVo">
+		select rsidx,psidx,rmidx,email,name,
+		to_char(startdate,'YYYY-MM-DD') startdate, 
+		to_char(enddate,'YYYY-MM-DD') enddate,
+		MONEY
+		,MONEYUNIT
+		,PSTITLE
+		,RMTITLE
+		,DAYS
+		,TEL
+		from p_reserve where rsidx = #{rsidx}
+	</select>
+	
+	<delete id="deleteByEmail">
+		DELETE p_reserve WHERE email = (select email from member where email = #{email})
+	</delete>
+	
+	<select id="selectByEmail" resultType="shop.noldaga.reserve.vo.ReserveVo">
+		select rsidx,psidx,rmidx,email,name,
+			to_char(startdate,'YYYY-MM-DD') startdate, 
+			to_char(enddate,'YYYY-MM-DD') enddate,
+			MONEY
+			,MONEYUNIT
+			,PSTITLE
+			,RMTITLE
+			,DAYS
+			,TEL
+		from p_reserve 
+		where email = #{email}		
+		and to_char(sysdate, 'YYYY-MM-DD') &lt;= STARTDATE
+	</select>
+	
+	<delete id="cancel">
+		delete p_reserve where rsidx = #{rsidx}
+	</delete>
+</mapper>

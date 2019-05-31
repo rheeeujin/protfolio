@@ -1,0 +1,105 @@
+@charset "UTF-8";
+
+/* Common */
+.wrap {max-width : 998px;margin: 0px auto; padding: 30px 0px;}
+hr{ clear: both;}
+html {scroll-behavior: smooth;}
+
+/* Pension list */
+figure.effect-marley figcaption {text-align: right;}
+figure.effect-marley h5,
+figure.effect-marley p {font-weight: 700; position: absolute; right: 100px; left: 30px; padding: 10px 0; color: white;}
+figure.effect-marley p {bottom: 30px; line-height: 1.5; transform: translate3d(0,100%,0);}
+figure.effect-marley h5 {transition: transform 0.35s; transform: translate3d(0,20px,0);}
+figure.effect-marley:hover h5 {transform: translate3d(0,0,0);}
+figure.effect-marley h5::after {position: absolute; top: 100%; left: 0; width: 100%; height: 4px; background: #fff; content: ''; transform: translate3d(0,40px,0);}
+figure.effect-marley h5::after,figure.effect-marley p {opacity: 0; transition: opacity 0.35s, transform 0.35s;}
+figure.effect-marley:hover h5::after,figure.effect-marley:hover p {opacity: 1; transform: translate3d(0,0,0);}
+
+.grid {float:left; position: relative; margin: 0 auto; padding: 10px; max-width: 1000px; list-style: none; text-align: center;}
+.grid figure {position: relative; float: left; overflow: hidden; margin: 10px 1%; min-width: 280px; max-width: 280px; max-height: 200px; background: #3085a3; text-align: center; cursor: pointer;}
+.grid figure img {position: relative; display: block; min-height: 100%; max-width: 100%; opacity: 0.8; width: 280px; height: 200px;}
+.grid figure figcaption {padding: 10px;; color: #fff; text-transform: uppercase; font-size: 13px; backface-visibility: hidden;}
+.grid figure figcaption::before,.grid figure figcaption::after {pointer-events: none;}
+.grid figure figcaption,.grid figure figcaption > a {position: absolute; top: 0; left: 0; width: 100%; height: 100%;}
+.grid figure figcaption > a {z-index: 1000; text-indent: 200%; white-space: nowrap; font-size: 0; opacity: 0;}
+.grid figure h5 {word-spacing: -0.15em; font-weight: 300;}
+.grid figure h5 span {font-weight: 800;}
+.grid figure h5,.grid figure p {margin: 0; width: 250px;}
+.grid figure p {letter-spacing: 1px; width: 250px;}
+
+/* Pension detail */
+.pensioninfo > img {float: left; width: 500px; height: 350px; margin: 30px 25px; box-shadow: 1px 1px 7px 3px;}
+.pensioninfo li {list-style: none;}
+.psinfo li h3 {text-align: center; padding: 20px 50px 5px; margin: 0;}
+.psinfo li h4 {margin: 0; padding: 10px 50px 5px;}
+.info2 {float: right; margin-right: 30px; margin-bottom: 25px;}
+
+.cont_tab {display: -webkit-box; list-style: none; margin-top: 10px; border-top: double; border-bottom:double; margin-bottom: 0; padding: 0; transition:all .8; clear: both;}
+.cont_tab_scrolled {position: fixed; top: -10px; background: #fff; z-index: 15; width: 998px; background: #eff2f1; border: 0;}
+.cont_tab li {text-align: center; width: 245px;}
+.cont_tab li a {color: black;}
+.cont_tab li a:hover {font-weight:bold;}
+
+.room {list-style: none; padding: 0;}
+.room li {border: 1px solid #f3f3f3; clear: left; padding: 10px; min-height: 200px; margin: 15px auto; border-radius: 5px;}
+.room li > * {float: left; margin: 0 15px;}
+.room li div {width: 442px;}
+.room li, .room li img {box-shadow: 1px 1px 7px 1px;}
+.room li img,.room li div:first-child {width: 267px; height: 178px; cursor: pointer;}
+.room li div:first-child:after {display: inline-block; content: ""; position: relative; bottom: 26px; left: 240px; z-index: 10; width: 24px; height: 24px; background: url(../images/pension/ico_picview.png) 0 0 no-repeat; background-size: 24px auto;}
+.room li div h4 {margin-bottom: 5px;}
+.room li div p,.room li div hr {margin: 8px 0;}
+.room li div button {width: 100%; color: #ddd; background: #333; border-radius: 5px; border: 0; cursor: pointer;}
+
+.detail {width: 80%; margin: 0 auto;}
+.detail > h3 {margin-top: 25px;}
+
+/* modal 이미지 상세 보기 슬라이더 */
+.modal {max-width: 900px; overflow: visible;}
+.blocker {z-index: 20;}
+.bx-wrapper {margin: 0 auto 15px;}
+.bx-wrapper ul {padding: 0}
+.bx-wrapper li {margin-top: -16px;}
+.bx-wrapper .slider img {width: 100%;}
+.bx-wrapper .sliderPager li {padding: 2px;}
+.bx-wrapper .sliderPager img {width: 100%; opacity: .3; transition: all .2s;}
+.bx-wrapper .sliderPager img:hover, .slidePagerHover {opacity: 1; transform:scale(1.05);}
+.bx-wrapper .bx-next:hover, .bx-wrapper .bx-next:focus,
+.bx-wrapper .bx-prev:hover, .bx-wrapper .bx-prev:focus {background-position-y: -32px;}
+
+/* review */
+.review ul {padding: 0; margin: 0; list-style: none;}
+.review ul li {border-bottom: 2px solid #ddd; padding: 15px;}
+.review ul div {display: inline-block;}
+.review ul div:first-child {width: 80%;}
+.review ul div:last-child {width: 20%;}
+.review ul li p {margin: 0;}
+
+.review-overall {width: 300px;margin: 0 auto;text-align: center;}
+.review-overall h4{margin-bottom: 30px;}
+.review-overall i{color: #fc0}
+.review-overall .progress{width: 50%;height: 20px;margin-left: 20px;}
+.review-overall > div.clearfix{display: flex; align-items: center;}
+
+
+.review-detail .reviewDetailImgWrapper, .reviewDetailContentWrapper {overflow: hidden; height: 90px}
+.review-detail .reviewDetailImgWrapper img {width: 100%;}
+
+.input-star i{margin: 5px; color: #fc0; cursor: pointer;}
+
+/* datail datepiker*/
+.clearfix >* {display: inline-block;}
+.clearfix > .progress {float: right;}
+#daterange {width: 300px;}
+.date-picker-wrapper.no-shortcuts{width: 274px; background: #6f1ef3 ; z-index: 100;}
+footer+.date-picker-wrapper.no-shortcuts.custom-topbar.no-gap.single-month{ left: 552.297px}
+.date-picker-wrapper .month-wrapper{width: 274px !important; border-color: #6610f2 !important;}
+.date-picker-wrapper .month-wrapper table.month1 {width: 100%}
+.date-picker-wrapper .month-wrapper	table.month1 th,
+.date-picker-wrapper .month-wrapper	table.month1 td {width: 14.28%}
+
+
+
+
+

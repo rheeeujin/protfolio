@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pension">
+	<select id="indexList" resultType="shop.noldaga.pension.vo.PensionVo">
+	<![CDATA[
+		select * from (   
+		    select psidx, pstitle, curaddr, oridx, rownum rn, (   
+		        select min(week) from p_room r   
+		        join p_charge c on r.rmidx = c.rmidx   
+		        where  p2.psidx = r.psidx   
+		        and week <> 0 and r.psidx = p2.psidx   
+		        group by r.psidx) as lowPrice 
+		    from p_pension p2   
+		    order by 1 desc   
+		)   
+		where rownum < 10
+	]]>
+	</select>
+	
+	<select id="readList" resultType="shop.noldaga.pension.vo.PensionVo">
+	<![CDATA[
+		select  PSTITLE,preaddr,psidx,oridx from p_PENSION WHERE ROWNUM <= 9 order by ORIDX
+	]]>
+	</select>
+	
+	<select id="selectPension" resultType="shop.noldaga.pension.vo.PensionVo">
+		select * from ( 
+			select rownum rn, a.* from( 
+				select p.psidx, oridx, preaddr, pstitle, min(rmsize) rmsize, min(week) lowPrice
+				from p_pension p 
+				join p_room r on r.psidx = p.psidx 
+				join p_charge c on r.rmidx = c.rmidx and week != 0 
+				<where>
+					<if test="search != null and search != ''">
+						and preaddr like '%${search}%' 
+					</if>
+					<if test="type ==2">
+						and pstitle like '%스파%'
+					</if>
+					<if test="type ==3">
+						and pstitle like '%풀빌라%'
+					</if>
+				</where>
+				group by p.psidx, oridx, preaddr, pstitle 
+				order by p.psidx
+			) a 
+			<where>
+				<if test="type ==4">
+					and rmsize >= 30 
+				</if>
+				<if test="to != null">
+					and rownum &lt;= #{to}
+				</if>
+			</where>
+		)where rn >= #{from}
+	</select>
+	
+	<select id="selectPensionCount" resultType="int">
+		select count(*) from(
+			select oridx,psidx,preaddr,pstitle,
+			(
+				select min(rmsize) from p_room r
+				where r.psidx= p.psidx group by psidx
+			) as rmsize 
+			from p_pension p 
+			<where>
+				<if test="search != null and search != ''">
+					and preaddr like '%${search}%' 
+				</if>
+				<if test="type ==2">
+					and PSTITLE LIKE '%스파%' 
+				</if>
+				<if test="type ==3">
+					and PSTITLE LIKE '%풀빌라%' 	
+				</if>
+			</where>
+		)
+		<if test="type ==4">
+			where rmsize >= 30 
+		</if>
+	</select>
+	
+	<select id="detailPension" resultType="shop.noldaga.common.util.LowerKeyMap">
+		<!-- 
+		select  
+			p.psidx, oridx, preaddr, curaddr, pstitle, calltel, pickup, longitude, latitude  
+			, r.rmidx, rmtitle, rmsize, rmpermin, rmpermax, rorder 
+			,(
+				select 
+				case 
+					when to_char(to_date(#{date}),'d') &lt; 6 then week  
+					when to_char(to_date(#{date}),'d') = 6 then fri 
+					else weekend 
+				end result 
+				from charge c 
+				where c.rmidx = r.rmidx  
+				and period = ( 
+					case 
+						when to_char(to_date(#{date}),'MM') in ('07','08','12','01') then 1 
+						else 0 
+					end 
+				)
+			) as price 
+		from pension p 
+		join room r on p.psidx=r.psidx 
+		where p.psidx = #{psidx}
+		 -->
+		select  
+		    p.psidx, oridx, preaddr, curaddr, pstitle, calltel, pickup, longitude, latitude  
+		    , r.rmidx, rmtitle, rmsize, rmpermin, rmpermax, rorder 
+		    ,(
+		        SELECT
+		           sum(getprice(TO_DATE(#{startdate})+rownum-1, rmidx))
+		        FROM all_objects
+		        where rownum &lt;= TO_DATE(#{enddate})-TO_DATE(#{startdate})) as tot
+		    ,(
+		        SELECT
+		           round(avg(getprice(TO_DATE(#{startdate})+rownum-1, rmidx))/100)*100
+		        FROM all_objects
+		        where rownum &lt;= TO_DATE(#{enddate})-TO_DATE(#{startdate})) as avg
+		    ,#{startdate} startdate,
+		    #{enddate} enddate,
+		    TO_DATE(#{enddate})-TO_DATE(#{startdate}) as days
+		from p_pension p 
+		join p_room r on p.psidx=r.psidx 
+		where p.psidx = #{psidx}
+	</select>
+	
+	<select id="roomImgCount" resultType="int">
+		select count(*) from p_roomimg where rmidx = #{rmidx}
+	</select>
+	
+	<resultMap type="shop.noldaga.board.vo.BoardVo" id="listReviewMap">
+		<result property="idx" column="idx"/>
+		<result property="title" column="title"/>
+		<result property="cont" column="cont"/>
+		<result property="regdate" column="regdate"/>
+		<result property="email" column="email"/>
+		<result property="psIdx" column="psidx"/>
+		<result property="score" column="score"/>
+		<collection property="imgList" column="boardidx" javaType="list" select="listReviewImg" ofType="shop.noldaga.board.vo.BoardImg" />
+	</resultMap>
+	
+	<select id="listReview" resultMap="listReviewMap">
+		select * from (  
+			SELECT a.*, rownum rn FROM (  
+		    	SELECT a.BOARDIDX, TITLE, CONT, SCORE,
+		    	CASE   
+			       	WHEN SYSDATE-REGDATE &lt; 1 THEN TO_CHAR(REGDATE,'HH:MI:SS')  
+			       	ELSE TO_CHAR(REGDATE, 'YY/MM/DD')  
+		    	END REGDATE,   
+		    	PSIDX,   
+		    	CONCAT(SUBSTR(EMAIL,1,3),'*****') EMAIL   
+		    	FROM p_BOARD a   
+		  	  	WHERE CATEGORY = 2 AND PSIDX = #{psidx}   
+		  	  	order by boardidx desc   
+			)a where rownum &lt;= #{to} 
+		) where rn >= #{from}
+	</select>
+	
+	<select id="listReviewImg" resultType="shop.noldaga.board.vo.BoardImg">
+		SELECT * FROM p_boardimg where boardidx = #{boardidx} order by bmidx
+	</select>
+	
+	<select id="reviewOverall" resultType="shop.noldaga.common.util.LowerKeyMap">
+		WITH TMP AS(   
+			SELECT SCORE FROM p_BOARD WHERE CATEGORY = 2 AND PSIDX = #{psidx}   
+			)   
+		SELECT 
+			A.*, 
+			(SELECT ROUND(AVG(SCORE*2))/2 AV FROM TMP) AS AVG,   
+  			(SELECT COUNT(SCORE) FROM TMP) AS CNT   
+		FROM(   
+		    SELECT *    
+		    FROM TMP   
+		    PIVOT (COUNT(SCORE) FOR SCORE IN (1, 2, 3, 4, 5))   
+		) A
+	</select>
+	
+	<insert id="writeReview" parameterType="shop.noldaga.board.vo.BoardVo">
+		<selectKey keyProperty="idx" order="BEFORE" resultType="int">
+			select board_seq.nextval from dual 
+		</selectKey>
+		insert into p_board(boardidx, title, cont, email, category, score, psIdx) values (#{idx}, #{title}, #{cont}, #{email}, 2,#{score}, #{psIdx})
+	</insert>
+	
+	<insert id="writeReviewImg" parameterType="shop.noldaga.board.vo.BoardImg">
+		insert into p_boardimg values (boardimg_seq.nextval, #{originName}, #{realName}, #{boardIdx})
+	</insert>
+	
+	
+</mapper>

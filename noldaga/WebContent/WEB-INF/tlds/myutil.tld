@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns= "http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation= "http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version="2.0">
+    <tlib-version >1.0</tlib-version>
+    <short-name>my</short-name>
+    <!-- 
+    <tag>
+    	<name>getJosa</name>
+    	<tag-class>shop.noldaga.common.util.Util</tag-class>
+    	<attribute>
+    		<name>name</name>
+    		<required>true</required>
+    		<name>firstValue</name>
+    		<required>true</required>
+    		<name>lastValue</name>
+    		<required>true</required>
+    	</attribute>
+    </tag>
+     -->
+    <function>
+    	<description>한글 조사 붙이기</description>
+        <name>getJosa</name>
+        <function-class>shop.noldaga.common.util.Util</function-class>
+        <function-signature>java.lang.String getJosa(java.lang.String, java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+    	<description>날짜로 변환</description>
+        <name>toDate</name>
+        <function-class>shop.noldaga.common.util.Util</function-class>
+        <function-signature>java.util.Date toDate(java.lang.String)</function-signature>
+    </function>
+</taglib>
+

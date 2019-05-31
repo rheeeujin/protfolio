@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	
+	<insert id="write" parameterType="shop.noldaga.board.vo.BoardVo">
+		insert into p_board (boardidx, title, cont, email)
+		values (board_seq.nextval, #{title}, #{cont}, #{email})
+	</insert>
+
+	<select id="list" resultType="shop.noldaga.board.vo.BoardVo">
+		select * from (   
+		    select rownum rn, boardidx as idx, title, cont, category,   
+		    CASE   
+		       	WHEN SYSDATE-REGDATE &lt; 1 THEN TO_CHAR(REGDATE,'HH:MI:SS')  
+		       	ELSE TO_CHAR(REGDATE, 'YY/MM/DD')  
+	    	END REGDATE,
+		    email, score, psidx   
+		    from p_board   
+			 where category = #{category } 
+		    and rownum &lt;= #{to}  
+		    order by 2 desc 
+		    )   
+		where rn >= #{from}
+	</select>
+	
+	<select id="get" resultType="shop.noldaga.board.vo.BoardVo">
+		select rownum rn, boardidx as idx, title, cont, category, regdate, email, score, psidx from p_board where boardidx = #{boardidx}
+	</select>
+	
+	<update id="modify" parameterType="shop.noldaga.board.vo.BoardVo">
+		UPDATE p_BOARD SET TITLE = #{title}, cont = #{cont} WHERE BOARDIDX = #{idx}
+	</update>
+	
+	<delete id="delete">
+		DELETE p_BOARD WHERE BOARDIDX = #{boardidx}
+	</delete>
+	
+	<delete id="deleteByEmail">
+		DELETE p_BOARD WHERE email = (select email from member where email = #{email})
+	</delete>
+
+</mapper>
