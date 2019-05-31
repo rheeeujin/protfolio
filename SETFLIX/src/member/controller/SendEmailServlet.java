@@ -101,8 +101,8 @@ public class SendEmailServlet extends HttpServlet {
 
 		public Authentication() {
 
-			String id = "setflix0@gmail.com"; // 구글 ID
-			String pw = "hisetflix78!"; // 구글 비밀번호
+			String id = "email"; // 구글 ID
+			String pw = "password"; // 구글 비밀번호
 
 			// ID와 비밀번호를 입력한다.
 			pa = new PasswordAuthentication(id, pw);
