@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="shop.noldaga.mapper.BoardAttachMapper">
+	<insert id="insert">
+		INSERT INTO TBL_ATTACH(UUID, UPLOADPATH, FILENAME, FILETYPE, BNO)
+		VALUES (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{bno})
+	</insert>
+	<delete id="delete">
+		DELETE FROM TBL_ATTACH WHERE UUID = #{uuid}
+	</delete>
+	<delete id="deleteAll">
+		DELETE FROM TBL_ATTACH WHERE BNO = #{bno}
+	</delete>
+	<select id="findByBno" resultType="shop.noldaga.domain.AttachFileVo">
+		SELECT * FROM TBL_ATTACH WHERE BNO = #{bno}
+	</select>
+	<select id="getOldFiles" resultType="shop.noldaga.domain.AttachFileVo">
+		<![CDATA[
+		SELECT * FROM TBL_ATTACH WHERE UPLOADPATH = TO_CHAR(SYSDATE, 'YYYY/MM/DD')
+		]]>
+	</select>
+</mapper>

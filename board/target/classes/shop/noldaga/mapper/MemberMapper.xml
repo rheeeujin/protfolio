@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="shop.noldaga.mapper.MemberMapper">
+
+	<resultMap type="shop.noldaga.domain.MemberVo" id="memberMap">
+		<id property="userid" column="USERID"/>
+		<!-- <result property="userid" column="USERID"/> -->
+		<result property="userpw" column="USERPW"/>
+		<result property="userName" column="USERNAME"/>
+		<result property="regDate" column="REGDATE"/>
+		<result property="updateDate" column="UPDATEDATE"/>
+		<result property="enabled" column="ENABLED"/>
+		<collection property="authList" resultMap="authMap" />
+	</resultMap>
+	
+	<resultMap type="shop.noldaga.domain.AuthVo" id="authMap">
+		<result property="userid" column="USERID"/>
+		<result property="auth" column="AUTH"/>
+	</resultMap>
+
+	<select id="read" resultMap="memberMap">
+		SELECT A.USERID, USERPW, USERNAME, ENABLED, REGDATE, UPDATEDATE, AUTH
+		FROM TBL_MEMBER A
+		LEFT JOIN TBL_MEMBER_AUTH B ON A.USERID = B.USERID
+		WHERE A.USERID = #{userid}
+	</select>
+</mapper>
