@@ -112,8 +112,8 @@ public class Util {
 
 		public MyAuthentication() {
 
-			String id = "noldagaman@gmail.com"; // 구글 ID
-			String pw = "qwer!234"; // 구글 비밀번호
+			String id = "email@gmail.com"; // 구글 ID
+			String pw = "password"; // 구글 비밀번호
 
 			// ID와 비밀번호를 입력한다.
 			pa = new PasswordAuthentication(id, pw);
